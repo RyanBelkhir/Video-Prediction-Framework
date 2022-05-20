@@ -46,7 +46,7 @@ class MovingMNIST(data.Dataset):
 
         if not self._check_exists():
             raise RuntimeError('Dataset not found.' +
-                               ' You can use download=True to download it')
+                            ' You can use download=True to download it')
 
         if self.train:
             self.train_data = torch.load(
@@ -152,3 +152,4 @@ class MovingMNIST(data.Dataset):
         tmp = '    Target Transforms (if any): '
         fmt_str += '{0}{1}'.format(tmp, self.target_transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
         return fmt_str
+    
