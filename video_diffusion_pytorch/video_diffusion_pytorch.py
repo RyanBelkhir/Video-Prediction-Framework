@@ -808,7 +808,7 @@ class Trainer(object):
     def __init__(
         self,
         diffusion_model,
-        folder,
+        dataloader,
         *,
         ema_decay = 0.995,
         num_frames = 16,
@@ -842,12 +842,12 @@ class Trainer(object):
         channels = diffusion_model.channels
         num_frames = diffusion_model.num_frames
 
-        self.ds = Dataset(folder, image_size, channels = channels, num_frames = num_frames)
+        #self.ds = Dataset(folder, image_size, channels = channels, num_frames = num_frames)
 
         print(f'found {len(self.ds)} videos as gif files at {folder}')
         assert len(self.ds) > 0, 'need to have at least 1 video to start training (although 1 is not great, try 100k)'
 
-        self.dl = cycle(data.DataLoader(self.ds, batch_size = train_batch_size, shuffle=True, pin_memory=True))
+        self.dl = cycle(dataloader)
         self.opt = Adam(diffusion_model.parameters(), lr = train_lr)
 
         self.step = 0
