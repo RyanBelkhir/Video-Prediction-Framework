@@ -546,7 +546,7 @@ class GaussianDiffusion(nn.Module):
         image_size,
         num_frames,
         text_use_bert_cls = False,
-        channels = 3,
+        channels = 1,
         timesteps = 1000,
         loss_type = 'l1'
     ):
@@ -720,7 +720,7 @@ CHANNELS_TO_MODE = {
     4 : 'RGBA'
 }
 
-def seek_all_images(img, channels = 3):
+def seek_all_images(img, channels = 1):
     assert channels in CHANNELS_TO_MODE, f'channels {channels} invalid'
     mode = CHANNELS_TO_MODE[channels]
 
@@ -743,7 +743,7 @@ def video_tensor_to_gif(tensor, path, duration = 120, loop = 0, optimize = True)
 
 # gif -> (channels, frame, height, width) tensor
 
-def gif_to_tensor(path, channels = 3, transform = T.ToTensor()):
+def gif_to_tensor(path, channels = 1, transform = T.ToTensor()):
     img = Image.open(path)
     tensors = tuple(map(transform, seek_all_images(img, channels = channels)))
     return torch.stack(tensors, dim = 1)
@@ -773,7 +773,7 @@ class Dataset(data.Dataset):
         self,
         folder,
         image_size,
-        channels = 3,
+        channels = 1,
         num_frames = 16,
         horizontal_flip = False,
         force_num_frames = True,
