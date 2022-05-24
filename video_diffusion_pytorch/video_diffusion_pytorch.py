@@ -340,7 +340,7 @@ class Unet3D(nn.Module):
         cond_dim = None,
         out_dim = None,
         dim_mults=(1, 2, 4, 8),
-        channels = 3,
+        channels = 1,
         attn_heads = 8,
         attn_dim_head = 32,
         use_bert_text_cond = False,
@@ -905,6 +905,7 @@ class Trainer(object):
             for i in range(self.gradient_accumulate_every):
                 data = next(self.dl)
                 data = data[0].cuda()
+                data = data[:, None, :]
                 with autocast(enabled = self.amp):
                     loss = self.model(
                         data,
