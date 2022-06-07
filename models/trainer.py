@@ -44,6 +44,8 @@ class Trainer(object):
         self.model_name = model_name
         self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
         self.ema = EMA(0.9)
+        self.ema.register(self.model)
+
 
     def train(self, train_loader):
         list_loss = []
