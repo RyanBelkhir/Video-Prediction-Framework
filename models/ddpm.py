@@ -4,23 +4,23 @@ import numpy as np
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 n_steps = 1000
 
-def make_beta_schedule(schedule='linear', n_timesteps=1000, start=0.02, end=0.0001):
+def make_beta_schedule(schedule='linear', n_steps=1000, start=0.02, end=0.0001):
     """
     Create a schedule of betas
     """
     if schedule == 'linear':
-        betas = torch.linspace(start, end, n_timesteps)
+        betas = torch.linspace(start, end, n_steps)
     elif schedule == 'geometric':
-        betas = torch.logspace(np.log10(start), np.log10(end), n_timesteps)
+        betas = torch.logspace(np.log10(start), np.log10(end), n_steps)
     elif schedule == "quad":
-        betas = torch.linspace(start ** 0.5, end ** 0.5, n_timesteps) ** 2
+        betas = torch.linspace(start ** 0.5, end ** 0.5, n_steps) ** 2
     elif schedule == "sigmoid":
-        betas = torch.linspace(-6, 6, n_timesteps)
+        betas = torch.linspace(-6, 6, n_steps)
         betas = torch.sigmoid(betas) * (end - start) + start
     return betas
 
-def get_alphas(schedule="geometric", n_timesteps=1000, start=0.02, end=0.0001):
-    betas = make_beta_schedule(schedule, n_timesteps, start, end).to(device)
+def get_alphas(schedule="geometric", n_steps=1000, start=0.02, end=0.0001):
+    betas = make_beta_schedule(schedule, n_steps, start, end).to(device)
     alphas = 1 - betas
     alphas_prod = torch.cumprod(1 - betas.flip(0), 0).flip(0).to(device)
     alphas_prod_p = torch.cat(([alphas_prod[1:], torch.tensor([1.0]).to(device)])).to(device)
@@ -39,10 +39,10 @@ def get_posteriors(betas, alphas, alphas_prod, alphas_prod_p):
 
 class DDPM(object):
 
-    def __init__(self, schedule="geometric", n_timesteps=1000, start=0.02, end=0.0001):
-        self.betas, self.alphas, self.alphas_prod, self.alphas_prod_p, self.alphas_bar_sqrt, self.one_minus_alphas_bar_log, self.one_minus_alphas_bar_sqrt = get_alphas(schedule, n_timesteps, start, end)
+    def __init__(self, schedule="geometric", n_steps=1000, start=0.02, end=0.0001):
+        self.betas, self.alphas, self.alphas_prod, self.alphas_prod_p, self.alphas_bar_sqrt, self.one_minus_alphas_bar_log, self.one_minus_alphas_bar_sqrt = get_alphas(schedule, n_steps, start, end)
         self.posterior_mean_coef_1, self.posterior_mean_coef_2, self.posterior_variance, self.posterior_log_variance_clipped = get_posteriors(self.betas, self.alphas, self.alphas_prod, self.alphas_prod_p)
-    
+        self.n_steps = n_steps
     def extract(self, input, t, x):
         shape = x.shape
         out = torch.gather(input, 0, t.to(input.device))

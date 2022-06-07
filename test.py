@@ -60,3 +60,5 @@ from models.models import UNet
 
 model = UNet()
 print("Model created.")
+torch.save(model.state_dict(), "checkpoints/model_ckt")
+print("Model saved.")
