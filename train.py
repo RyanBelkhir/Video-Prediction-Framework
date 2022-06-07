@@ -41,8 +41,8 @@ for seq, seq_target in train_loader:
     break
 
 from models.models import UNet
+from models.ddpm import DDPM, EMA
 from models.trainer import Trainer
-from models.ddpm import DDPM
 
 model = UNet()
 ddpm = DDPM()

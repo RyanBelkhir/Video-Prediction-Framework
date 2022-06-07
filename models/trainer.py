@@ -1,7 +1,7 @@
 
 import torch 
 import torch.optim as optim
-from models.models import EMA
+from models.ddpm import EMA
 import numpy as np
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
