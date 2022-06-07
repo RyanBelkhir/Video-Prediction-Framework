@@ -6,11 +6,11 @@ import numpy as np
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def noise_estimation_loss(model, x_0, ddpm, cond=True, mode="L2"):
+def noise_estimation_loss(model, x_0, ddpm, cond=None, mode="L2"):
     batch_size = x_0.shape[0]
-    if cond:
-        x_0_cond = x_0[:,:5,:]
-        x_0 = x_0[:,5:10,:]
+    #if cond is not None:
+    #    x_0_cond = x_0[:,:5,:]
+    #    x_0 = x_0[:,5:10,:]
     # Select a random step for each example
     t = torch.randint(0, ddpm.n_steps, size=(batch_size // 2 + 1,)).cuda()
     t = torch.cat([t, ddpm.n_steps - t - 1], dim=0)[:batch_size].long().cuda()
@@ -21,7 +21,7 @@ def noise_estimation_loss(model, x_0, ddpm, cond=True, mode="L2"):
     e = torch.randn_like(x_0).cuda()
     # model input
     x = x_0 * a + e * am1
-    output = model(x, t, x_0_cond)
+    output = model(x, t, cond)
     if mode == "L1":
         def pow_(x):
             return x.abs()
@@ -49,10 +49,12 @@ class Trainer(object):
         list_loss = []
         for n in range(self.n_epochs):
             for seq, val_seq in train_loader:
-                seq = seq.to(device)
+                seq = seq.float().to(device)
                 seq = 2 * seq - 1
+                val_seq = val_seq.float().to(device)
+                val_seq = 2 * val_seq - 1
                 # Compute the loss.
-                loss = noise_estimation_loss(self.model, seq, self.ddpm)
+                loss = noise_estimation_loss(self.model, seq, self.ddpm, cond=val_seq)
                 # Before the backward pass, zero all of the network gradients
                 self.optimizer.zero_grad()
                 # Backward pass: compute gradient of the loss with respect to parameters
