@@ -40,25 +40,11 @@ for seq, seq_target in train_loader:
     print('Target: ', seq_target.shape)
     break
 
-"""import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.animation as animation
-
-img = [] # some array of images
-frames = [] # for storing the generated images
-fig = plt.figure()
-
-for i in range(seq[0].shape[0]):
-    frames.append([plt.imshow(seq[0][i], cmap=cm.Greys_r,animated=True)])
-
-ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True,
-                                repeat_delay=100)
-# ani.save('movie.mp4')
-plt.show()"""
-
 from models.models import UNet
+from models.trainer import Trainer
+from models.ddpm import DDPM
 
 model = UNet()
-print("Model created.")
-torch.save(model.state_dict(), "checkpoints/model_ckt")
-print("Model saved.")
+ddpm = DDPM()
+trainer = Trainer(model, ddpm)
+trainer.train(train_loader)

@@ -164,8 +164,8 @@ def partialclass(cls, *args, **kwds):
 
 class UNet(nn.Module):
     def __init__(self, n_channels=1, ch=32, mode="deepest", dropout=0.1, time_conditional=True, 
-                 version="DDPM", logit_transform=False, rescaled=True, num_frames=10, num_frames_cond=0,
-                 output_all_frames=False):
+                version="DDPM", logit_transform=False, rescaled=True, num_frames=10, num_frames_cond=10,
+                output_all_frames=False):
         super(UNet, self).__init__()
 
         self.n_channels = n_channels

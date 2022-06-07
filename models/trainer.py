@@ -33,16 +33,12 @@ def noise_estimation_loss(model, x_0, ddpm, cond=True, mode="L2"):
     loss = pow_((e - output).reshape(len(x), -1)).sum(dim=-1).mean(dim=0) 
     return loss
 
-class Logger(object):
-    def __init__():
-
-    def (self, )
-
 
 class Trainer(object):
     
-    def __init__(self, model, n_epochs=500, learning_rate=1e-3, model_name="model_ckt"):
+    def __init__(self, model, ddpm, n_epochs=500, learning_rate=1e-3, model_name="model_ckt"):
         self.model = model
+        self.ddpm = ddpm
         self.n_epochs = n_epochs
         self.learning_rate = learning_rate
         self.model_name = model_name
@@ -56,7 +52,7 @@ class Trainer(object):
                 seq = seq.to(device)
                 seq = 2 * seq - 1
                 # Compute the loss.
-                loss = noise_estimation_loss(self.model, seq)
+                loss = noise_estimation_loss(self.model, seq, self.ddpm)
                 # Before the backward pass, zero all of the network gradients
                 self.optimizer.zero_grad()
                 # Backward pass: compute gradient of the loss with respect to parameters
