@@ -50,6 +50,7 @@ class Trainer(object):
     def train(self, train_loader):
         list_loss = []
         for n in range(self.n_epochs):
+            print(f"Epoch : {n} loss : {np.mean(list_loss)}")
             for seq, val_seq in train_loader:
                 seq = seq.float().to(device)
                 seq = 2 * seq - 1
@@ -69,8 +70,6 @@ class Trainer(object):
                 self.ema.update(self.model)
                 # Print loss
                 list_loss.append(loss.cpu().detach())
-
-            print(f"Epoch : {n} loss : {np.mean(list_loss)}")
             list_loss = []               
             if n % 20 == 0:
                 torch.save(self.model.state_dict(), "checkpoints/" + self.model_name)
