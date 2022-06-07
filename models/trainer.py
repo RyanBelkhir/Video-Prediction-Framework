@@ -42,7 +42,7 @@ class Trainer(object):
         self.n_epochs = n_epochs
         self.learning_rate = learning_rate
         self.model_name = model_name
-        self.optimizer = optim.Adam
+        self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
         self.ema = EMA(0.9)
 
     def train(self, train_loader):
