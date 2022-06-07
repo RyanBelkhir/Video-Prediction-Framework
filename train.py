@@ -44,7 +44,9 @@ from models.models import UNet
 from models.ddpm import DDPM, EMA
 from models.trainer import Trainer
 
-model = UNet()
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+model = UNet().to(device)
 ddpm = DDPM()
 trainer = Trainer(model, ddpm)
 trainer.train(train_loader)
