@@ -51,11 +51,16 @@ class Trainer(object):
         list_loss = []
         num_frames = self.model.num_frames
         num_frames_cond = self.model.num_frames_cond
+        t = 0
         for n in range(self.n_epochs):
             for seq in train_loader:
+                t += 1
+                print(f"Batch number {t}")
                 seq = seq.float().to(device).squeeze()
                 seq = 2 * seq - 1
                 cond, data = seq[:, :num_frames_cond, :], seq[:, num_frames_cond:num_frames_cond + num_frames, :]
+                print(f"Cond shape : {cond.shape}")
+                print(f"Data shape : {data.shape}")
                 # Compute the loss.
                 loss = noise_estimation_loss(self.model, data, self.ddpm, cond=cond)
                 # Before the backward pass, zero all of the network gradients
