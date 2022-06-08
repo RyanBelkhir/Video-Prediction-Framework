@@ -61,6 +61,7 @@ class Trainer(object):
                 cond, data = seq[:, :num_frames_cond, :], seq[:, num_frames_cond:num_frames_cond + num_frames, :]
                 print(f"Cond shape : {cond.shape}")
                 print(f"Data shape : {data.shape}")
+                print(f"Device : {data.device}")
                 # Compute the loss.
                 loss = noise_estimation_loss(self.model, data, self.ddpm, cond=cond)
                 # Before the backward pass, zero all of the network gradients
