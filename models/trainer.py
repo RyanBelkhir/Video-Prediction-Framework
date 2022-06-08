@@ -49,14 +49,15 @@ class Trainer(object):
 
     def train(self, train_loader):
         list_loss = []
+        num_frames = self.model.num_frames
+        num_frames_cond = self.model.num_frames_cond
         for n in range(self.n_epochs):
-            for seq, val_seq in train_loader:
+            for seq in train_loader:
                 seq = seq.float().to(device)
                 seq = 2 * seq - 1
-                val_seq = val_seq.float().to(device)
-                val_seq = 2 * val_seq - 1
+                cond, data = seq[:, :num_frames_cond, :], seq[:, num_frames_cond:num_frames_cond + num_frames, :]
                 # Compute the loss.
-                loss = noise_estimation_loss(self.model, seq, self.ddpm, cond=val_seq)
+                loss = noise_estimation_loss(self.model, data, self.ddpm, cond=cond)
                 # Before the backward pass, zero all of the network gradients
                 self.optimizer.zero_grad()
                 # Backward pass: compute gradient of the loss with respect to parameters

@@ -39,10 +39,10 @@ def get_posteriors(betas, alphas, alphas_prod, alphas_prod_p):
 
 class DDPM(object):
 
-    def __init__(self, schedule="geometric", n_steps=1000, start=0.02, end=0.0001):
-        self.betas, self.alphas, self.alphas_prod, self.alphas_prod_p, self.alphas_bar_sqrt, self.one_minus_alphas_bar_log, self.one_minus_alphas_bar_sqrt = get_alphas(schedule, n_steps, start, end)
+    def __init__(self, config):
+        self.betas, self.alphas, self.alphas_prod, self.alphas_prod_p, self.alphas_bar_sqrt, self.one_minus_alphas_bar_log, self.one_minus_alphas_bar_sqrt = get_alphas(config.model.sigma_dist, config.model.num_classes, config.model.sigma_begin, config.model.sigma_end)
         self.posterior_mean_coef_1, self.posterior_mean_coef_2, self.posterior_variance, self.posterior_log_variance_clipped = get_posteriors(self.betas, self.alphas, self.alphas_prod, self.alphas_prod_p)
-        self.n_steps = n_steps
+        self.n_steps = config.model.num_classes
     def extract(self, input, t, x):
         shape = x.shape
         out = torch.gather(input, 0, t.to(input.device))
