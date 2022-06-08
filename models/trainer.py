@@ -43,7 +43,7 @@ class Trainer(object):
         self.learning_rate = learning_rate
         self.model_name = model_name
         self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
-        self.ema = EMA(0.9)
+        self.ema = EMA(model.config)
         self.ema.register(self.model)
 
 
