@@ -34,8 +34,8 @@ class MovingMNIST(data.Dataset):
     training_file = 'moving_mnist_train.pt'
     test_file = 'moving_mnist_test.pt'
 
-    def __init__(self, root, train=True, split=1000, transform=None, target_transform=None, download=False):
-        self.root = os.path.expanduser(root)
+    def __init__(self, data_root, train=True, split=1000, transform=None, target_transform=None, download=False):
+        self.data_root = os.path.expanduser(data_root)
         self.transform = transform
         self.target_transform = target_transform
         self.split = split
@@ -50,10 +50,10 @@ class MovingMNIST(data.Dataset):
 
         if self.train:
             self.train_data = torch.load(
-                os.path.join(self.root, self.processed_folder, self.training_file))
+                os.path.join(self.data_root, self.processed_folder, self.training_file))
         else:
             self.test_data = torch.load(
-                os.path.join(self.root, self.processed_folder, self.test_file))
+                os.path.join(self.data_root, self.processed_folder, self.test_file))
 
     def __getitem__(self, index):
         """
@@ -91,8 +91,8 @@ class MovingMNIST(data.Dataset):
             return len(self.test_data)
 
     def _check_exists(self):
-        return os.path.exists(os.path.join(self.root, self.processed_folder, self.training_file)) and \
-            os.path.exists(os.path.join(self.root, self.processed_folder, self.test_file))
+        return os.path.exists(os.path.join(self.data_root, self.processed_folder, self.training_file)) and \
+            os.path.exists(os.path.join(self.data_root, self.processed_folder, self.test_file))
 
     def download(self):
         """Download the Moving MNIST data if it doesn't exist in processed_folder already."""
@@ -104,8 +104,8 @@ class MovingMNIST(data.Dataset):
 
         # download files
         try:
-            os.makedirs(os.path.join(self.root, self.raw_folder))
-            os.makedirs(os.path.join(self.root, self.processed_folder))
+            os.makedirs(os.path.join(self.data_root, self.raw_folder))
+            os.makedirs(os.path.join(self.data_root, self.processed_folder))
         except OSError as e:
             if e.errno == errno.EEXIST:
                 pass
@@ -116,7 +116,7 @@ class MovingMNIST(data.Dataset):
             print('Downloading ' + url)
             data = urllib.request.urlopen(url)
             filename = url.rpartition('/')[2]
-            file_path = os.path.join(self.root, self.raw_folder, filename)
+            file_path = os.path.join(self.data_root, self.raw_folder, filename)
             with open(file_path, 'wb') as f:
                 f.write(data.read())
             with open(file_path.replace('.gz', ''), 'wb') as out_f, \
@@ -128,15 +128,15 @@ class MovingMNIST(data.Dataset):
         print('Processing...')
 
         training_set = torch.from_numpy(
-            np.load(os.path.join(self.root, self.raw_folder, 'mnist_test_seq.npy')).swapaxes(0, 1)[:-self.split]
+            np.load(os.path.join(self.data_root, self.raw_folder, 'mnist_test_seq.npy')).swapaxes(0, 1)[:-self.split]
         )
         test_set = torch.from_numpy(
-            np.load(os.path.join(self.root, self.raw_folder, 'mnist_test_seq.npy')).swapaxes(0, 1)[-self.split:]
+            np.load(os.path.join(self.data_root, self.raw_folder, 'mnist_test_seq.npy')).swapaxes(0, 1)[-self.split:]
         )
 
-        with open(os.path.join(self.root, self.processed_folder, self.training_file), 'wb') as f:
+        with open(os.path.join(self.data_root, self.processed_folder, self.training_file), 'wb') as f:
             torch.save(training_set, f)
-        with open(os.path.join(self.root, self.processed_folder, self.test_file), 'wb') as f:
+        with open(os.path.join(self.data_root, self.processed_folder, self.test_file), 'wb') as f:
             torch.save(test_set, f)
 
         print('Done!')
@@ -146,7 +146,7 @@ class MovingMNIST(data.Dataset):
         fmt_str += '    Number of datapoints: {}\n'.format(self.__len__())
         tmp = 'train' if self.train is True else 'test'
         fmt_str += '    Train/test: {}\n'.format(tmp)
-        fmt_str += '    Root Location: {}\n'.format(self.root)
+        fmt_str += '    Root Location: {}\n'.format(self.data_root)
         tmp = '    Transforms (if any): '
         fmt_str += '{0}{1}\n'.format(tmp, self.transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
         tmp = '    Target Transforms (if any): '

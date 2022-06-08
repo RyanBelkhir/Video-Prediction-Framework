@@ -64,8 +64,8 @@ class DDPM(object):
         return mean, var
 
 class EMA(object):
-    def __init__(self, mu=0.999):
-        self.mu = mu
+    def __init__(self, config):
+        self.mu = config.model.ema_rate
         self.shadow = {}
 
     def register(self, module):

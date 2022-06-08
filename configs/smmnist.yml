@@ -1,0 +1,57 @@
+data:
+  channels: 1
+  dataset: StochasticMovingMNIST
+  gaussian_dequantization: false
+  image_size: 64
+  logit_transform: false
+  num_digits: 2
+  num_frames: 5
+  num_frames_cond: 5
+  num_workers: 0
+  prob_mask_cond: 0.0
+  random_flip: true
+  rescaled: true
+  step_length: 0.1
+  uniform_dequantization: false
+training:
+  batch_size: 64
+
+model:
+  arch: unetmore
+  attn_resolutions:
+  - 8
+  - 16
+  - 32
+  ch_mult:
+  - 1
+  - 2
+  - 3
+  - 4
+  cond_emb: false
+  conditional: true
+  depth: deep
+  dropout: 0.1
+  ema: true
+  ema_rate: 0.999
+  gamma: false
+  gff: false
+  n_head_channels: 64
+  ngf: 64
+  noise_in_cond: false
+  nonlinearity: swish
+  normalization: InstanceNorm++
+  num_classes: 1000
+  num_res_blocks: 2
+  output_all_frames: false
+  sigma_begin: 0.02
+  sigma_dist: linear
+  sigma_end: 0.0001
+  spade: true
+  spec_norm: false
+  time_conditional: true
+  type: v1
+  version: DDPM
+
+
+
+

@@ -163,25 +163,23 @@ def partialclass(cls, *args, **kwds):
 
 
 class UNet(nn.Module):
-    def __init__(self, n_channels=1, ch=32, mode="deepest", dropout=0.1, time_conditional=True, 
-                version="DDPM", logit_transform=False, rescaled=True, num_frames=10, num_frames_cond=10,
-                output_all_frames=False):
+    def __init__(self, config):
         super(UNet, self).__init__()
-
-        self.n_channels = n_channels
-        self.ch = ch 
-        self.mode = mode
+        self.config = config
+        self.n_channels = n_channels = config.data.channels
+        self.ch = ch = config.model.ngf 
+        self.mode = mode = getattr(config, 'mode', 'deep')
         assert mode in ['deep', 'deeper', 'deepest']
-        self.dropout = nn.Dropout2d(p=dropout)
-        self.time_conditional = time_conditional
+        self.dropout = nn.Dropout2d(p=getattr(config.model, 'dropout', 0.0))
+        self.time_conditional = time_conditional = getattr(config.model, 'time_conditional', False)
 
-        self.version = version
-        self.logit_transform = logit_transform
-        self.rescaled = rescaled
-        self.output_all_frames = output_all_frames
+        self.version = getattr(config.model, "version", "SMLD").upper()
+        self.logit_transform = config.data.logit_transform
+        self.rescaled = config.data.rescaled
+        self.output_all_frames = output_all_frames = config.model.output_all_frames
 
-        self.num_frames = num_frames
-        self.num_frames_cond = num_frames_cond 
+        self.num_frames = num_frames = getattr(config.data, 'num_frames', 1)
+        self.num_frames_cond = num_frames_cond = getattr(config.data, 'num_frames_cond', 0) + getattr(config.data, "num_frames_future", 0)
 
         # TODO make sure channel is in dimensions 1 [bs x c x 32 x 32]
         ResnetBlock_ = partialclass(ResnetBlock, dropout=self.dropout, tembdim=ch * 4, conditional=time_conditional)
