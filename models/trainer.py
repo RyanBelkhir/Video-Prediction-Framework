@@ -54,8 +54,6 @@ class Trainer(object):
         t = 0
         for n in range(self.n_epochs):
             for seq in train_loader:
-                t += 1
-                print(f"Batch number {t}")
                 seq = seq.float().to(device).squeeze()
                 seq = 2 * seq - 1
                 cond, data = seq[:, :num_frames_cond, :], seq[:, num_frames_cond:num_frames_cond + num_frames, :]
@@ -76,9 +74,11 @@ class Trainer(object):
                 self.ema.update(self.model)
                 # Print loss
                 list_loss.append(loss.cpu().detach())
-            print(f"Epoch : {n} loss : {np.mean(list_loss)}")
-            list_loss = []               
-            if n % 20 == 0:
+                if t % 50 == 0:
+                    print(f"Epoch : {n} loss : {np.mean(list_loss)} step : {t}")
+                    list_loss = [] 
+                t += 1              
+            if n % 5 == 0:
                 torch.save(self.model.state_dict(), "checkpoints/" + self.model_name)
                 print("Model saved.")
 
