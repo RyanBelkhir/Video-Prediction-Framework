@@ -53,7 +53,7 @@ class Trainer(object):
         num_frames_cond = self.model.num_frames_cond
         for n in range(self.n_epochs):
             for seq in train_loader:
-                seq = seq.float().to(device)
+                seq = seq.float().to(device).squeeze()
                 seq = 2 * seq - 1
                 cond, data = seq[:, :num_frames_cond, :], seq[:, num_frames_cond:num_frames_cond + num_frames, :]
                 # Compute the loss.
