@@ -36,13 +36,13 @@ def noise_estimation_loss(model, x_0, ddpm, cond=None, mode="L2"):
 
 class Trainer(object):
     
-    def __init__(self, model, ddpm, n_epochs=500, learning_rate=1e-3, model_name="model_ckt"):
+    def __init__(self, model, ddpm, model_name="model_ckt"):
         self.model = model
         self.ddpm = ddpm
-        self.n_epochs = n_epochs
-        self.learning_rate = learning_rate
+        self.n_epochs = model.config.training.n_epochs
+        self.learning_rate = model.config.training.learning_rate
         self.model_name = model_name
-        self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
         self.ema = EMA(model.config)
         self.ema.register(self.model)
 
