@@ -67,9 +67,10 @@ elif config.data.dataset == "StochasticMovingMNIST":
                     shuffle=False)
 
 elif config.data.dataset == "KTH":
-    train_set = KTHDataset(data_root=".data/kth", train=True)
-    test_set = KTHDataset(data_root=".data/kth", train=False)
-    
+    num_frames = frames_per_sample=config.data.num_frames + config.data.num_frames_cond
+    train_set = KTHDataset(data_root=".data/kth", frames_per_sample=num_frames , train=True)
+    test_set = KTHDataset(data_root=".data/kth", frames_per_sample=num_frames, train=False)
+
     train_loader = torch.utils.data.DataLoader(
                     dataset=train_set,
                     batch_size=config.training.batch_size,

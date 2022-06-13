@@ -5,8 +5,8 @@ data:
   image_size: 64
   logit_transform: false
   num_digits: 2
-  num_frames: 5
-  num_frames_cond: 5
+  num_frames: 10
+  num_frames_cond: 10
   num_workers: 0
   prob_mask_cond: 0.0
   random_flip: true
