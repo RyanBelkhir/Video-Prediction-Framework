@@ -1,5 +1,6 @@
 from data.MNIST.MovingMNIST import MovingMNIST
 from data.MNIST.stochastic_moving_mnist import StochasticMovingMNIST
+from data.KTH.kth import KTHDataset
 import os
 
 import torch
@@ -64,6 +65,21 @@ elif config.data.dataset == "StochasticMovingMNIST":
                     dataset=test_set,
                     batch_size=config.training.batch_size,
                     shuffle=False)
+
+elif config.data.dataset == "KTH":
+    train_set = KTHDataset(data_root=".data/kth", train=True)
+    test_set = KTHDataset(data_root=".data/kth", train=False)
+    
+    train_loader = torch.utils.data.DataLoader(
+                    dataset=train_set,
+                    batch_size=config.training.batch_size,
+                    shuffle=True)
+    test_loader = torch.utils.data.DataLoader(
+                    dataset=test_set,
+                    batch_size=config.training.batch_size,
+                    shuffle=False)
+
+
 
 print('==>>> total trainning batch number: {}'.format(len(train_loader)))
 print('==>>> total testing batch number: {}'.format(len(test_loader)))
