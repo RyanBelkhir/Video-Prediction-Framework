@@ -14,7 +14,7 @@ data:
   step_length: 0.1
   uniform_dequantization: false
 training:
-  batch_size: 64
+  batch_size: 32
 
 model:
   arch: unetmore
