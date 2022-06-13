@@ -13,7 +13,7 @@ from .h5 import HDF5Dataset
 class KTHDataset(Dataset):
 
     def __init__(self, data_dir, frames_per_sample=5, train=True, random_time=True, random_horizontal_flip=True,
-                 total_videos=-1, with_target=True, start_at=0):
+                total_videos=-1, with_target=True, start_at=0):
 
         self.data_dir = data_dir                    # '/path/to/Datasets/KTH64_h5' (with shard_0001.hdf5 and persons.pkl in it)
         self.train = train
