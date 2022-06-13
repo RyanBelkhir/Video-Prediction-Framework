@@ -45,7 +45,7 @@ model:
   num_res_blocks: 2
   output_all_frames: false
   sigma_begin: 0.02
-  sigma_dist: linear
+  sigma_dist: geometric
   sigma_end: 0.0001
   spade: true
   spec_norm: false
