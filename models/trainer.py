@@ -76,9 +76,11 @@ class Trainer(object):
                     print(f"Epoch : {n} loss : {np.mean(list_loss)} step : {t}")
                     list_loss = [] 
                 t += 1              
-            if n % 5 == 0:
-                if not os.path.exists( "checkpoints/" + self.model.config.data.dataset):
-                    os.makedirs(self.model.state_dict(), "checkpoints/" + self.model.config.data.dataset + "/" + self.model_name + "_" + self.model.config.model.sigma_dist + "_" + str(n))
-                torch.save(self.model.state_dict(), "checkpoints/" + self.model.config.data.dataset + "/" + self.model_name + "_" + self.model.config.model.sigma_dist + "_" + str(n) + "/model_ckt")
+            if n % self.model.config.training.save_freq == 0:
+                directory = "checkpoints/" + self.model.config.data.dataset + "/" + self.model.config.model.sigma_dist + "/" + self.model_name + "_" + str(n)
+                print(directory)
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+                torch.save(self.model.state_dict(), directory + "/model_ckt")
                 print("Model saved.")
 

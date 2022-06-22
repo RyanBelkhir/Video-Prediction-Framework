@@ -17,6 +17,7 @@ training:
   batch_size: 32
   n_epochs: 1000000
   learning_rate: 0.0002
+  save_freq: 50
 model:
   arch: unetmore
   attn_resolutions:
