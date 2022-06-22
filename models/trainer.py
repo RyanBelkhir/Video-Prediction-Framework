@@ -3,6 +3,7 @@ import torch
 import torch.optim as optim
 from models.ddpm import EMA
 import numpy as np
+import os
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -36,7 +37,7 @@ def noise_estimation_loss(model, x_0, ddpm, cond=None, mode="L2"):
 
 class Trainer(object):
     
-    def __init__(self, model, ddpm, model_name="model_ckt"):
+    def __init__(self, model, ddpm, model_name="model"):
         self.model = model
         self.ddpm = ddpm
         self.n_epochs = model.config.training.n_epochs
@@ -76,6 +77,8 @@ class Trainer(object):
                     list_loss = [] 
                 t += 1              
             if n % 5 == 0:
+                if not os.path.exists( "checkpoints/" + self.model.config.data.dataset):
+                    os.makedirs("checkpoints/" + self.model.config.data.dataset)
                 torch.save(self.model.state_dict(), "checkpoints/" + self.model.config.data.dataset + "/" + self.model_name + "_" + self.model.config.model.sigma_dist + "_" + str(n))
                 print("Model saved.")
 
