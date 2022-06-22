@@ -4,6 +4,7 @@ import torch.optim as optim
 from models.ddpm import EMA
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -50,6 +51,7 @@ class Trainer(object):
 
     def train(self, train_loader):
         list_loss = []
+        temp_loss = []
         num_frames = self.model.num_frames
         num_frames_cond = self.model.num_frames_cond
         t = 0
@@ -59,7 +61,7 @@ class Trainer(object):
                 seq = 2 * seq - 1
                 cond, data = seq[:, :num_frames_cond, :], seq[:, num_frames_cond:num_frames_cond + num_frames, :]
                 # Compute the loss.
-                loss = noise_estimation_loss(self.model, data, self.ddpm, cond=cond)
+                loss = noise_estimation_loss(self.model, data, self.ddpm, cond=cond, model=self.model.config.training.loss)
                 # Before the backward pass, zero all of the network gradients
                 self.optimizer.zero_grad()
                 # Backward pass: compute gradient of the loss with respect to parameters
@@ -71,10 +73,11 @@ class Trainer(object):
                 # Update the exponential moving average
                 self.ema.update(self.model)
                 # Print loss
+                temp_loss.append(loss.cpu().detach())
                 list_loss.append(loss.cpu().detach())
                 if t % 50 == 0:
-                    print(f"Epoch : {n} loss : {np.mean(list_loss)} step : {t}")
-                    list_loss = [] 
+                    print(f"Epoch : {n} loss : {np.mean(temp_loss)} step : {t}")
+                    temp_loss = [] 
                 t += 1              
             if n % self.model.config.training.save_freq == 0:
                 directory = "checkpoints/" + self.model.config.data.dataset + "/" + self.model.config.model.sigma_dist + "/" + self.model_name + "_" + str(n)
@@ -82,5 +85,10 @@ class Trainer(object):
                 if not os.path.exists(directory):
                     os.makedirs(directory)
                 torch.save(self.model.state_dict(), directory + "/model_ckt")
+                np.save(directory + "/loss_history", list_loss)
+                plt.plot(list(range(len(list_loss)), list_loss))
+                plt.xlabel("Number of Steps")
+                plt.ylabel("Loss " + self.model.config.training.loss)
+                plt.savefig(directory + '/plot_loss.png')
                 print("Model saved.")
 
