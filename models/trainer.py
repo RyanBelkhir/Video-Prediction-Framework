@@ -61,7 +61,7 @@ class Trainer(object):
                 seq = 2 * seq - 1
                 cond, data = seq[:, :num_frames_cond, :], seq[:, num_frames_cond:num_frames_cond + num_frames, :]
                 # Compute the loss.
-                loss = noise_estimation_loss(self.model, data, self.ddpm, cond=cond, model=self.model.config.training.loss)
+                loss = noise_estimation_loss(self.model, data, self.ddpm, cond=cond, mode=self.model.config.training.loss)
                 # Before the backward pass, zero all of the network gradients
                 self.optimizer.zero_grad()
                 # Backward pass: compute gradient of the loss with respect to parameters
