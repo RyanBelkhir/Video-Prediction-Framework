@@ -5,6 +5,7 @@ from models.ddpm import EMA
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import yaml
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -90,5 +91,9 @@ class Trainer(object):
                 plt.xlabel("Number of Steps")
                 plt.ylabel("Loss " + self.model.config.training.loss)
                 plt.savefig(directory + '/plot_loss.png')
+                
+                with open(directory + '/config.yml', 'w') as outfile:
+                    yaml.dump(self.model.config, outfile, default_flow_style=False)
+
                 print("Model saved.")
 
