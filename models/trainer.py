@@ -76,6 +76,6 @@ class Trainer(object):
                     list_loss = [] 
                 t += 1              
             if n % 5 == 0:
-                torch.save(self.model.state_dict(), "checkpoints/" + self.model_name)
+                torch.save(self.model.state_dict(), "checkpoints/" + self.model.config.data.dataset + "/" + self.model_name + "_" + self.model.config.model.sigma_dist + "_" + str(n))
                 print("Model saved.")
 
