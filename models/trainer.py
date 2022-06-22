@@ -6,6 +6,13 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import yaml
+import argparse 
+
+def namespace_to_dict(namespace):
+    return {
+        k: namespace_to_dict(v) if isinstance(v, argparse.Namespace) else v
+        for k, v in vars(namespace).items()
+    }
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -93,7 +100,7 @@ class Trainer(object):
                 plt.savefig(directory + '/plot_loss.png')
                 
                 with open(directory + '/config.yml', 'w') as outfile:
-                    yaml.dump(self.model.config, outfile, default_flow_style=False)
+                    yaml.dump(namespace_to_dict(self.model.config), outfile, default_flow_style=False)
 
                 print("Model saved.")
 
