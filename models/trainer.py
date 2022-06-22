@@ -86,7 +86,7 @@ class Trainer(object):
                     os.makedirs(directory)
                 torch.save(self.model.state_dict(), directory + "/model_ckt")
                 np.save(directory + "/loss_history", list_loss)
-                plt.plot(list(range(len(list_loss)), list_loss))
+                plt.plot(list(range(len(list_loss))), list_loss)
                 plt.xlabel("Number of Steps")
                 plt.ylabel("Loss " + self.model.config.training.loss)
                 plt.savefig(directory + '/plot_loss.png')
