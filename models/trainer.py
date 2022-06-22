@@ -78,7 +78,7 @@ class Trainer(object):
                 t += 1              
             if n % 5 == 0:
                 if not os.path.exists( "checkpoints/" + self.model.config.data.dataset):
-                    os.makedirs("checkpoints/" + self.model.config.data.dataset)
-                torch.save(self.model.state_dict(), "checkpoints/" + self.model.config.data.dataset + "/" + self.model_name + "_" + self.model.config.model.sigma_dist + "_" + str(n))
+                    os.makedirs(self.model.state_dict(), "checkpoints/" + self.model.config.data.dataset + "/" + self.model_name + "_" + self.model.config.model.sigma_dist + "_" + str(n))
+                torch.save(self.model.state_dict(), "checkpoints/" + self.model.config.data.dataset + "/" + self.model_name + "_" + self.model.config.model.sigma_dist + "_" + str(n) + "/model_ckt")
                 print("Model saved.")
 
